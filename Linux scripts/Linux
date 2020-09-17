@@ -1,0 +1,142 @@
+ system.sh scripts
+
+ #!/bin/bash
+
+Free -h > ~/backups/freemem/freememory.txt
+Du -h > ~/backups/diskuse/diskusage.txt
+Lsof > ~/backups/openlist/listofopenfiles.txt
+Df -h > ~/backups/freedisk/freediskspace.txt
+
+
+
+Roulette loss
+#The following scripts was used to investigate the time and and what dealer was on shift at the time of this roulette loss as well as the players.
+dealers_working_during_losses.sh
+cat 0310_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '02:00:00 PM' > dealers_working_during_losses.txt
+cat 0310_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '05:00:00 AM' >> dealers_working_during_losses.txt
+cat 0310_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '08:00:00 AM' >> dealers_working_during_losses.txt
+cat 0310_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '11:00:00 PM' >> dealers_working_during_losses.txt
+cat 0310_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '08:00:00 PM' >> dealers_working_during_losses.txt
+cat 0312_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '08:00:00 PM' >> dealers_working_during_losses.txt
+cat 0312_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '05:00:00 AM' >> dealers_working_during_losses.txt
+cat 0312_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '08:00:00 AM' >> dealers_working_during_losses.txt
+cat 0312_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '02:00:00 PM' >> dealers_working_during_losses.txt
+cat 0312_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '11:00:00 PM' >> dealers_working_during_losses.txt
+cat 0315_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '05:00:00 AM' >> dealers_working_during_losses.txt
+cat 0315_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '08:00:00 AM' >> dealers_working_during_losses.txt
+cat 0315_Dealer_schedule | awk -F " " {'print $1,$2,$5,$6'} | grep '02:00:00 PM' >> dealers_working_during_losses.txt
+
+roulette_dealer_finder_by_time.sh
+#! /bin/bash
+# $1 = time
+# $2 = AM or PM
+# $3 = Date
+
+# READ!
+
+grep $1 ${3}_Dealer_schedule | grep -iw $2 | awk -F' ' '{print $1, $2, $5, $6}'
+
+
+
+Backup.sh
+#!/bin/bash
+
+# Create /var/backup 
+mkdir -p /var/backup
+
+# Create new /var/backup/home.tar
+tar cvf /var/backup/home.tar /home
+
+# Moves the file `/var/backup/home.tar` to `/var/backup/home.last.tar`.
+mv /var/backup/home.tar /var/backup/home.last.tar
+
+# Create an archive of `/home`and saves to `/var/backup/home.tar`.
+tar cvf /var/backup/system.tar /home 	
+
+# List all files in `/var/backup`, file sizes, save output to `/var/backup/file_report.txt`.
+ls -lh /var/backup > /var/backup/file_report.txt
+
+# show how much free memory on your machine. Save this to `/var/backup/disk_report.txt`.
+free -h > /var/backup/disk_report.txt
+
+
+Cleanup.sh
+#!/bin/bash
+
+# Clean up temp directories
+rm -rf /tmp/*
+rm -rf /var/tmp/*	
+
+# Clear apt cache
+apt clean -y
+
+# Clear thumbnail cache for sysadmin, instructor, and student
+rm -rf /home/sysadmin/.cache/thumbnails
+rm -rf /home/instructor/.cache/thumbnails
+rm -rf /home/student/.cache/thumbnails
+rm -rf /root/.cache/thumbnails
+
+
+
+Update.sh
+#!/bin/bash
+
+# Ensure apt has all available updates
+apt update -y
+
+# Upgrade installed packages
+apt upgrade -y
+
+# Install new packages, and uninstall any old packages that
+# must be removed to install them
+apt full-upgrade -y
+
+# Remove unused packages
+apt autoremove --purge -y
+
+# Perform with a single line of code.
+apt update -y && apt upgrade -y && apt full-upgrade -y && apt-get autoremove --purge -y
+
+
+Lynis scripts 
+For security Scan
+Lynis.partial.sh
+#!/bin/bash
+
+lynis audit --tests-from-group malware,authentication,networking,storage,filesystems >> /tmp/lynis.partial_scan.log
+
+ Lynis.system.sh
+#!/usr/bin
+
+lynis audit system >> /tmp/lynis.system_scan.log
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
