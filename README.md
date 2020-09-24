@@ -197,7 +197,7 @@ After this, the commands below run the playbook:
  
 ```bash
 $ cd /etc/ansible
-$ ansible-playbook ansiblwelk.yml elk
+$ ansible-playbook ansibleelk.yml elk
 $ ansible-playbook install_filebeat.yml webservers
 $ ansible-playbook install_metricbeat.yml webservers
 ```
